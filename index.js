@@ -1,4 +1,4 @@
-const sql = require('mysql12');
+const sql = require('mysql2');
 const inquirer = require('inquirer');
 
 
