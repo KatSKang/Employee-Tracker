@@ -26,7 +26,7 @@
   
   Then run `node index.js` to start the menu prompts.
   
-  Click [here](https://youtu.be/c4GYYPggr3E) for the video walkthough. 
+  Click [here](https://youtu.be/8yoOteo9icc) for the video walkthough. 
   
   ![image](https://user-images.githubusercontent.com/105574653/193988237-675a4a32-c9ce-45cc-afc2-6cb1c43ebd0c.png)
 
