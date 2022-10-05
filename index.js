@@ -17,7 +17,7 @@ const menuQuestions = [
     {
         type: 'list',
         name: 'menu',
-        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employees manager', 'Delete department, role, or employee', 'Exit'],
+        choices: ['View all departments', 'View all roles', 'View all employees', 'Add new department', 'Add new role', 'Add new employee', 'Update an employee manager', 'Delete employee', 'Exit'],
         message: 'Please select an option from the menu.'
     }
 ];
@@ -34,16 +34,16 @@ function mainMenu() {
                     return viewAllRoles();
                 case "View all employees":
                     return viewAllEmployees();
-                case "Add a department":
+                case "Add new department":
                     return addDepartment();
-                case "Add a role":
+                case "Add new role":
                     return addRole();
-                case "Add an employee":
+                case "Add new employee":
                     return addEmployee();
-                case "Update an employees manager":
+                case "Update an employee manager":
                     return updateEmployee();
-                case "Delete department, role, or employee":
-                    return deleteMenu();
+                case "Delete employee":
+                    return deleteEmployee();
                 case "Exit":
                     return;
             }
@@ -97,7 +97,14 @@ function addDepartment() {
         {
             name: 'name',
             type: 'input',
-            message: "Enter the name of the department you would like to add."
+            message: "Enter the name of the department you would like to add.",
+            validate: (name) => {
+                if (name) {
+                  return true;
+                } else {
+                    return "Please enter a Department name";
+                }
+            }   
         }
     ])
     .then(res => {
@@ -117,11 +124,25 @@ function addRole() {
             name: 'title',
             type: 'input',
             message: 'Enter the job title you would like to add.',
+            validate: (title) => {
+                if (title) {
+                  return true;
+                } else {
+                    return "Please enter a job title";
+                }
+            }
         },
         {
             name: 'salary',
             type: 'input',
             message: 'Enter the salary for the new role.',
+            validate: (salary) => {
+                if (isNaN(salary)) {
+                  return "Please enter a valid salary"
+                } else {
+                    return true;
+                }
+            }
         },
         {
             name: 'department',
@@ -130,7 +151,7 @@ function addRole() {
         }
     ])
     .then(res => {
-        const addQuery = `INSERT INTO roles (title, salary, department) VALUES ('${res.title}', '${res.salary}', '${res.department}')`;
+        const addQuery = `INSERT INTO roles (title, salary, department_id) VALUES ('${res.title}', '${res.salary}', '${res.department}')`;
         db.query(addQuery, (err) => {
             if(err) throw err;
             console.log("~New role has been added~");
@@ -145,21 +166,42 @@ function addEmployee() {
             name: 'first_name',
             type: 'input',
             message: 'Enter the employees first name.',
+            validate: (first_name) => {
+                if (first_name) {
+                  return true;
+                } else {
+                    return "Please enter a first name.";
+                }
+            }
         },
         {
             name: 'last_name',
             type: 'input',
             message: 'Enter the employees last name.',
+            validate: (last_name) => {
+                if (last_name) {
+                  return true;
+                } else {
+                    return "Please enter a last name.";
+                }
+            }
         },
         {
             name: 'role',
             type: 'input',
             message: 'Enter the role ID this employee belongs to.',
+            validate: (role) => {
+                if (role) {
+                  return true;
+                } else {
+                    return "Please enter a role ID.";
+                }
+            }
         },
         {
             name: 'manager',
             type: 'input',
-            message: 'Enter the manager ID for this employee (press enter to skip).',
+            message: 'Enter the manager ID for this employee.',
         }
     ])
     .then(res => {
@@ -172,6 +214,8 @@ function addEmployee() {
     })
 }
 
+
+//Bonus functions
 function updateEmployee() {
     inquirer.prompt([
         {
@@ -194,3 +238,22 @@ function updateEmployee() {
         })
     })
 }
+
+function deleteEmployee() {
+    inquirer.prompt([
+        {
+            name: 'employeeID',
+            type: 'input',
+            message: 'Enter the employee ID to delete.'
+        }
+    ])
+    .then(res => {
+        const deleteQuery = `DELETE FROM employees WHERE id = '${res.employeeID}'`;
+        db.query(deleteQuery, (err) => {
+            if(err) throw err;
+            console.log("~Employee has been deleted~");
+            viewAllEmployees();
+        })
+    })
+}
+
